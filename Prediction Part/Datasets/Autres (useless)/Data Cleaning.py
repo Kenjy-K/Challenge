@@ -2,10 +2,7 @@
 import pandas as pd
 from datetime import datetime
 
-
 #%% Datas
-
-data_final = pd.DataFrame(columns=['Date', 'Y_Total', 'D_Total'])
 
 #Bike data
 url='https://docs.google.com/spreadsheets/d/e/2PACX-1vQVtdpXMHB4g9h75a0jw8CsrqSuQmP5eMIB2adpKR5hkRggwMwzFy5kB-AIThodhVHNLxlZYm8fuoWj/pub?gid=2105854808&single=true&output=csv'
@@ -18,29 +15,42 @@ frames = [meteo_2020, meteo_2021]
 meteo = pd.concat(frames, ignore_index = True)
 
 #Rename and delete useless colums
-data_bike.rename(columns={"Heure / Time": "Time", "Vélos depuis le 1er janvier / Grand total": "Y_Total", "Vélos ce jour / Today's total": "D_Total"}, inplace=True)
-data_bike.drop(['Unnamed: 4', 'Remarque'], axis=1, inplace=True)
+data_bike.rename(columns={"Heure / Time": "Time", "Vélos depuis le 1er janvier / Grand total": "Grand Total", "Vélos ce jour / Today's total": "Today_total"}, inplace=True)
+data_bike.drop(['Unnamed: 4', 'Remarque', "Grand Total"], axis=1, inplace=True)
 data_bike.dropna(inplace=True)
 
-# %%
-for j, day in data_bike.iterrows():
-    data_bike['Date'].loc[j] = datetime.strptime(day['Date'],"%d/%m/%Y")
+#%% Changing time format
+data_bike['Time'] = data_bike['Time'].astype('str')
+data_bike['Time']
+data_bike['Date'] = data_bike['Date'].astype('str')
+data_bike['Date']
 
-for j, day in meteo.iterrows():
-    meteo['DATE'].loc[j] = datetime.strptime(day['DATE'], "%Y-%m-%d")
+#%%
+time_improved = pd.to_datetime(data_bike['Date'] + ' ' + data_bike['Time'], format = '%d/%m/%Y %H:%M:%S')
+time_improved 
+
+
+#%%
+#Create correct timing format in the dataframe
+data_bike['DateTime'] = time_improved
+
+# remove useles columns
+del data_bike['Date']
+del data_bike['Time']
+
 # %%
-date_range = pd.date_range(start=data_bike['Date'].iloc[0], end=data_bike['Date'].iloc[-1])
+# visualize the data set now that the time is well formated:
+data_bike = data_bike.set_index(['DateTime'])
+data_bike = data_bike.sort_index(ascending = False)
 
 # %%
 #cumuler les données d'une journée en une seule data
-for date in date_range:
-    df = data_bike[data_bike['Date'] == date]
-    Y_total = 0
-    D_total = 0
+for date in data_bike["DateTime"]:
+    df = data_bike[data_bike['DateTime'] == date]
+    Today_total = 0
     for i, days in df.iterrows():
-         D_total = D_total + days['D_Total']
-         Y_total = Y_total + days['Y_Total']
-    data_final = data_final.append({'Date':date,'Y_Total':Y_total,'D_Total':D_total},ignore_index=True)
+         Today_total = Today_total + days['Today_total']
+    data_final = data_final.append({'Date': date, 'Today_total': Today_total},ignore_index=True)
 
 #%%
 data_final.drop([374],inplace=True)
