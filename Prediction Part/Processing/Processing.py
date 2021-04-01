@@ -140,5 +140,3 @@ print("Le nombre de vélos prévus pour le 02/04/2021 est de:", ceil(pred.iloc[-
 # Prediction
 prediction = pred.iloc[-1] *0.20
 print("Le nombre de vélos prévus pour le 02/04/2021, entre 00:00 et 09:00 est de:", ceil(prediction))
-
-# %%

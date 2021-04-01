@@ -44,7 +44,7 @@ fig = px.scatter_mapbox(
     hover_name="Id",           
     mapbox_style='open-street-map', 
     zoom=11,
-    title= 'Evolution du traffic de vélos aux bornes de comptage à Montpellier'
+    title= 'Evolution du traffic de vélos aux bornes de comptage à Montpellier (see https://github.com/Kenjy-K/Challenge)'
 )
 
 fig.layout.coloraxis.showscale = True
@@ -65,7 +65,7 @@ fig = px.scatter_mapbox(
     hover_name="Id",           
     mapbox_style='outdoors', 
     zoom=11,
-    title= 'Evolution du traffic de vélos aux bornes de comptage à Montpellier',
+    title= 'Evolution du traffic de vélos aux bornes de comptage à Montpellier (see https://github.com/Kenjy-K/Challenge)',
     animation_frame="Date", 
     animation_group="Id"
 )
@@ -82,3 +82,5 @@ fig.show()
 # %%
 #we export the file using a html page
 plotly.offline.plot(fig, filename = 'index.html', auto_open=False)
+
+# %%
